@@ -1,7 +1,8 @@
-import React = require("react");
+import * as React from "react";
+import { Map } from "~/Components/Map";
 
 function Root(): JSX.Element {
-  return <>Hello World!</>;
+  return <Map />;
 }
 
 export { Root };

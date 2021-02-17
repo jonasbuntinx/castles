@@ -15,8 +15,5 @@
     "strict": true,
     "target": "ES5"
   },
-  "include": [
-    "src", 
-    "typings"
-  ]
+  "include": ["src", "typings"]
 }
