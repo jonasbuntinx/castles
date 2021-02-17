@@ -1,0 +1,36 @@
+{
+  "name": "axelspace-assignment",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./src/main.tsx",
+  "scripts": {
+    "build": "tsc",
+    "bundle": "parcel build index.html",
+    "format": "prettier --check './src/**/*.{ts,tsx}'",
+    "lint": "eslint --max-warnings=0 ./src",
+    "serve": "parcel serve index.html"
+  },
+  "author": "Jonas Buntinx",
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^3.0.0",
+    "@tailwindcss/postcss7-compat": "^2.0.3",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "autoprefixer": "^9.8.6",
+    "eslint": "^7.20.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "parcel": "^1.12.4",
+    "postcss": "^7.0.35",
+    "prettier": "^2.2.1",
+    "prettier-eslint": "^12.0.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3",
+    "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  }
+}
