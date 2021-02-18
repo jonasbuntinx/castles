@@ -1,13 +1,13 @@
 import * as React from "react";
 import { render } from "react-dom";
-import { Root } from "~/Components/Root";
+import { Home } from "~/Pages/Home";
 
 function app(): void {
   render(
     <React.StrictMode>
-      <Root />
+      <Home />
     </React.StrictMode>,
-    document.getElementById("root")
+    document.getElementById("app")
   );
 }
 

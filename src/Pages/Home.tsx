@@ -9,7 +9,7 @@ type State = {
 
 type Actions = { tag: "UpdateCenter"; center: MapboxGL.LngLat } | { tag: "Reset" };
 
-function Root(): JSX.Element {
+function Home(): JSX.Element {
   const data = [
     { name: "Edo Castle", location: new MapboxGL.LngLat(139.752496, 35.6877513) },
     { name: "Matsumoto Castle", location: new MapboxGL.LngLat(137.9666734, 36.2386573) },
@@ -59,4 +59,4 @@ function Root(): JSX.Element {
   );
 }
 
-export { Root };
+export { Home };
