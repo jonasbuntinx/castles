@@ -1,6 +1,6 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import * as React from "react";
-import { Color, IconButton } from "./Button";
+import { Color, IconButton } from "~/Components/Base/Button";
 
 type Props = {
   onClose: () => void;
