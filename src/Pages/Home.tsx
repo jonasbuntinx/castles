@@ -1,10 +1,9 @@
 import * as React from "react";
-import * as MapboxGL from "mapbox-gl";
 import { Map } from "~/Components/Map";
 import { Popup } from "~Components/Popup";
 import { Navigation } from "~Components/Navigation";
 import { CastleSummary } from "~Components/CastleSummary";
-import { Castle, Condition } from "~Data/Castle";
+import { Castle, castles } from "~Data/Castle";
 
 type State = {
   selected: Castle | null;
@@ -21,21 +20,7 @@ type Actions =
   | { tag: "Reset" };
 
 function Home(): JSX.Element {
-  const data = [
-    { id: 0, name: "Edo Castle", location: new MapboxGL.LngLat(139.752496, 35.6877513), condition: Condition.Ruins },
-    {
-      id: 1,
-      name: "Matsumoto Castle",
-      location: new MapboxGL.LngLat(137.9666734, 36.2386573),
-      condition: Condition.Original,
-    },
-    {
-      id: 2,
-      name: "Osaka Castle",
-      location: new MapboxGL.LngLat(135.5237615, 34.6873377),
-      condition: Condition.Reconstructed,
-    },
-  ];
+  const data = React.useMemo(() => castles, []);
 
   const initialState = {
     selected: data[0],
