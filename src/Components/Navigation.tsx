@@ -9,7 +9,7 @@ type Props = {
 
 function Navigation(props: Props): JSX.Element {
   return (
-    <div className="flex flex-row justify-between">
+    <div className="flex flex-row justify-between border-t border-gray-200  py-3 px-6 ">
       <IconButton color={Color.Gray} icon={faChevronLeft} onClick={props.onBack} />
       <IconButton color={Color.Gray} icon={faChevronRight} onClick={props.onForward} />
     </div>

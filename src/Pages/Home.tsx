@@ -2,7 +2,7 @@ import * as React from "react";
 import { Map } from "~/Components/Map";
 import { Popup } from "~Components/Popup";
 import { Navigation } from "~Components/Navigation";
-import { CastleSummary } from "~Components/CastleSummary";
+import { Header, Summary } from "~Components/Castle";
 import { Castle, castles } from "~Data/Castle";
 
 type State = {
@@ -85,13 +85,13 @@ function Home(): JSX.Element {
           <Map center={state.selected?.location} zoom={state.zoom} onFlyTo={onFlyToCallback} onMove={onMoveCallback} />
           {state.selected ? (
             <Popup
-              title={state.selected.name}
               isOpen={state.isOpen}
               position={state.point ? { x: state.point.x, y: state.point.y } : { x: 0, y: 0 }}
               onClose={() => dispatch({ tag: "ClosePopup" })}
+              header={<Header castle={state.selected} />}
               footer={<Navigation onBack={() => null} onForward={() => null} />}
             >
-              <CastleSummary castle={state.selected} />
+              <Summary castle={state.selected} />
             </Popup>
           ) : (
             <></>
