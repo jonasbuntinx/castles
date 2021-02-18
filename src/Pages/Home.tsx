@@ -8,16 +8,9 @@ import { Castle, castles } from "~Data/Castle";
 type State = {
   selected: Castle | null;
   zoom: number;
-  point: { x: number; y: number } | null;
-  isOpen: boolean;
 };
 
-type Actions =
-  | { tag: "SelectCastle"; selected: Castle }
-  | { tag: "UpdatePoint"; point: { x: number; y: number } }
-  | { tag: "OpenPopup" }
-  | { tag: "ClosePopup" }
-  | { tag: "Reset" };
+type Actions = { tag: "SelectCastle"; selected: Castle } | { tag: "Reset" };
 
 function Home(): JSX.Element {
   const data = React.useMemo(() => castles, []);
@@ -25,22 +18,14 @@ function Home(): JSX.Element {
   const initialState = {
     selected: data[0],
     zoom: 12.0,
-    point: null,
-    isOpen: true,
   };
 
   const reducer: React.Reducer<State, Actions> = (state: State, action: Actions) => {
     switch (action.tag) {
       case "SelectCastle":
-        return { ...state, selected: action.selected, isOpen: false };
-      case "UpdatePoint":
-        return { ...state, point: action.point };
-      case "OpenPopup":
-        return { ...state, isOpen: true };
-      case "ClosePopup":
-        return { ...state, isOpen: false };
+        return { ...state, selected: action.selected };
       case "Reset":
-        return { ...initialState, isOpen: false };
+        return { ...initialState };
       default:
         throw new Error();
     }
@@ -48,54 +33,48 @@ function Home(): JSX.Element {
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
-  const onFlyToCallback = React.useCallback(() => {
-    dispatch({ tag: "OpenPopup" });
-  }, [dispatch]);
-
-  const onMoveCallback = React.useCallback(
-    point => {
-      dispatch({ tag: "UpdatePoint", point });
-    },
-    [dispatch]
-  );
-
   return (
     <>
       <div className="h-screen flex">
-        <div className="w-1/4 flex flex-col">
-          {data.map((castle, key) => (
+        <div className="w-1/4">
+          <div className="flex flex-col">
+            {data.map((castle, key) => (
+              <button
+                key={key}
+                onClick={() => {
+                  dispatch({ tag: "SelectCastle", selected: castle });
+                }}
+              >
+                {castle.name}
+              </button>
+            ))}
             <button
-              key={key}
               onClick={() => {
-                dispatch({ tag: "SelectCastle", selected: castle });
+                dispatch({ tag: "Reset" });
               }}
             >
-              {castle.name}
+              Reset
             </button>
-          ))}
-          <button
-            onClick={() => {
-              dispatch({ tag: "Reset" });
-            }}
-          >
-            Reset
-          </button>
+          </div>
         </div>
-        <div className="relative flex-1 overflow-hidden">
-          <Map center={state.selected?.location} zoom={state.zoom} onFlyTo={onFlyToCallback} onMove={onMoveCallback} />
-          {state.selected ? (
-            <Popup
-              isOpen={state.isOpen}
-              position={state.point ? { x: state.point.x, y: state.point.y } : { x: 0, y: 0 }}
-              onClose={() => dispatch({ tag: "ClosePopup" })}
-              header={<Header castle={state.selected} />}
-              footer={<Navigation onBack={() => null} onForward={() => null} />}
-            >
-              <Summary castle={state.selected} />
-            </Popup>
-          ) : (
-            <></>
-          )}
+        <div className="flex-1">
+          <Map
+            center={state.selected?.location}
+            zoom={state.zoom}
+            popupContent={close =>
+              state.selected ? (
+                <Popup
+                  onClose={() => close()}
+                  header={<Header castle={state.selected} />}
+                  footer={<Navigation onBack={() => null} onForward={() => null} />}
+                >
+                  <Summary castle={state.selected} />
+                </Popup>
+              ) : (
+                <></>
+              )
+            }
+          />
         </div>
       </div>
     </>
