@@ -1,4 +1,4 @@
-import { faCheck, faChessRook, faHammer, faHouseDamage } from "@fortawesome/free-solid-svg-icons";
+import { faChessRook, faHammer, faHouseDamage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs = require("dayjs");
 import * as React from "react";
@@ -29,14 +29,7 @@ function Popup(props: Props): JSX.Element {
   const header = (
     <>
       <h1 className="font-medium truncate">{props.castle.name}</h1>
-      {props.castle.visited ? (
-        <h3 className="flex items-center justify-center text-xs mt-1">
-          <span className="mr-2">{dayjs(props.castle.visited).format("DD/MM/YYYY")}</span>
-          <FontAwesomeIcon className={"text-xs"} icon={faCheck} />
-        </h3>
-      ) : (
-        <></>
-      )}
+      <h3 className="text-xs mt-1">{dayjs(props.castle.visited).format("DD/MM/YYYY")}</h3>
     </>
   );
 

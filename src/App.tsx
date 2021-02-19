@@ -1,97 +1,133 @@
 import * as React from "react";
 import { Map } from "~/Components/Map";
 import { Popup } from "~/Components/Castle";
-import { Castle, castles } from "~/Data/Castle";
+import { Castle, castles, Condition } from "~/Data/Castle";
+import dayjs = require("dayjs");
+import { List } from "~Components/List";
 
 type State = {
   selected: Castle | null;
   zoom: number;
+  sortingRule: SortingRule | null;
 };
 
-type Actions =
-  | { tag: "SelectCastle"; selected: Castle }
-  | { tag: "Sort" }
-  | { tag: "Next" }
-  | { tag: "Previous" }
-  | { tag: "Reset" };
+type SortingRule = { type: SortType; desc?: boolean };
+
+enum SortType {
+  Alphanumeric = "alphanumeric",
+  Datetime = "datetime",
+}
 
 function App(): JSX.Element {
-  const data = React.useMemo(() => castles, []);
-
-  const initialState = {
-    selected: data[0],
+  const [state, setState] = React.useState<State>({
+    selected: castles[0],
     zoom: 12.0,
-  };
-
-  const reducer: React.Reducer<State, Actions> = (state: State, action: Actions) => {
-    switch (action.tag) {
-      case "SelectCastle":
-        return { ...state, selected: action.selected };
-      case "Sort":
-        return state;
-      case "Next": {
-        const currentIndex = data.findIndex(item => (state.selected ? item.id == state.selected.id : false));
-        const nextIndex = (currentIndex + 1) % data.length;
-        return { ...state, selected: data[nextIndex] };
-      }
-      case "Previous": {
-        const currentIndex = data.findIndex(item => (state.selected ? item.id == state.selected.id : false));
-        const nextIndex = (currentIndex + data.length - 1) % data.length;
-        return { ...state, selected: data[nextIndex] };
-      }
-      case "Reset":
-        return { ...initialState };
-      default:
-        throw new Error();
-    }
-  };
-
-  const [state, dispatch] = React.useReducer(reducer, initialState);
+    sortingRule: null,
+  });
 
   return (
     <>
       <div className="h-screen flex">
-        <div className="w-80">
-          <div className="flex flex-col">
-            {data.map((castle, key) => (
-              <button
-                key={key}
-                className={state.selected && castle.id == state.selected.id ? "bg-green-900 text-white" : ""}
-                onClick={() => {
-                  dispatch({ tag: "SelectCastle", selected: castle });
-                }}
-              >
-                {castle.name}
-              </button>
-            ))}
+        <List
+          data={castles}
+          renderItem={castle => (
             <button
-              onClick={() => {
-                dispatch({ tag: "Reset" });
-              }}
+              className={state.selected && castle.id == state.selected.id ? "bg-green-900 text-white" : ""}
+              onClick={() => setState(state => ({ ...state, selected: castle }))}
             >
-              Reset
+              {castle.name} {dayjs(castle.visited).format("DD/MM/YYYY")}
             </button>
-          </div>
-        </div>
-        <div className="flex-1">
-          <Map
-            center={state.selected?.location}
-            zoom={state.zoom}
-            popupContent={close =>
-              state.selected ? (
-                <Popup
-                  castle={state.selected}
-                  className="h-full"
-                  onClose={() => close()}
-                  onPrevious={() => dispatch({ tag: "Previous" })}
-                  onNext={() => dispatch({ tag: "Next" })}
+          )}
+          render={(list, sort, filter, next, previous, reset) => (
+            <>
+              <div className="w-80">
+                <div className="flex flex-col">
+                  {list}
+                  <button
+                    className={
+                      state.sortingRule?.type == SortType.Alphanumeric && Boolean(state.sortingRule?.desc) == true
+                        ? "bg-green-900 text-white"
+                        : "bg-white"
+                    }
+                    onClick={() => {
+                      setState(state => ({ ...state, sortingRule: { type: SortType.Alphanumeric, desc: true } }));
+                      sort((a: Castle, b: Castle) => b.name.localeCompare(a.name));
+                    }}
+                  >
+                    Sort Alphanumeric Desc
+                  </button>
+                  <button
+                    className={
+                      state.sortingRule?.type == SortType.Alphanumeric && Boolean(state.sortingRule?.desc) == false
+                        ? "bg-green-900 text-white"
+                        : "bg-white"
+                    }
+                    onClick={() => {
+                      setState(state => ({ ...state, sortingRule: { type: SortType.Alphanumeric } }));
+                      sort((a: Castle, b: Castle) => a.name.localeCompare(b.name));
+                    }}
+                  >
+                    Sort Alphanumeric Asc
+                  </button>
+                  <button
+                    className={
+                      state.sortingRule?.type == SortType.Datetime && Boolean(state.sortingRule?.desc) == true
+                        ? "bg-green-900 text-white"
+                        : "bg-white"
+                    }
+                    onClick={() => {
+                      setState(state => ({ ...state, sortingRule: { type: SortType.Datetime, desc: true } }));
+                      sort((a: Castle, b: Castle) => (dayjs(a.visited).isBefore(dayjs(b.visited)) ? 1 : -1));
+                    }}
+                  >
+                    Sort Datetime Desc
+                  </button>
+                  <button
+                    className={
+                      state.sortingRule?.type == SortType.Datetime && Boolean(state.sortingRule?.desc) == false
+                        ? "bg-green-900 text-white"
+                        : "bg-white"
+                    }
+                    onClick={() => {
+                      setState(state => ({ ...state, sortingRule: { type: SortType.Datetime } }));
+                      sort((a: Castle, b: Castle) => (dayjs(a.visited).isAfter(dayjs(b.visited)) ? 1 : -1));
+                    }}
+                  >
+                    Sort Datetime Asc
+                  </button>
+                  <button onClick={() => filter(({ condition }) => condition != Condition.Original)}>Filter</button>
+                  <button onClick={() => filter(null)}>UnFilter</button>
+                  <button onClick={reset}>Reset</button>
+                  <button onClick={() => setState(state => ({ ...state, selected: next(state.selected) }))}>
+                    Next
+                  </button>
+                  <button onClick={() => setState(state => ({ ...state, selected: previous(state.selected) }))}>
+                    Prev
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1">
+                <Map
+                  center={state.selected?.location}
+                  zoom={state.zoom}
+                  popupContent={close => {
+                    return state.selected ? (
+                      <Popup
+                        castle={state.selected}
+                        className="h-full"
+                        onClose={() => close()}
+                        onPrevious={() => setState(state => ({ ...state, selected: previous(state.selected) }))}
+                        onNext={() => setState(state => ({ ...state, selected: next(state.selected) }))}
+                      />
+                    ) : (
+                      <></>
+                    );
+                  }}
                 />
-              ) : (
-                <></>
-              )
-            }
-          />
-        </div>
+              </div>
+            </>
+          )}
+        />
       </div>
     </>
   );

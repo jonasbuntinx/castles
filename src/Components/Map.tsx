@@ -9,41 +9,31 @@ type Props = {
 
 type PopupState = {
   isOpen: boolean;
-  point: { x: number; y: number };
+  point: { x: number; y: number } | null;
   content: React.ReactNode | null;
 };
 
-type PopupActions =
-  | { tag: "Open" }
-  | { tag: "Close" }
-  | { tag: "SetContent"; content: React.ReactNode | null }
-  | { tag: "SetPoint"; point: { x: number; y: number } };
+const calculatePoint = (ref: React.RefObject<HTMLDivElement>, map: MapboxGL.Map, lgnLat: MapboxGL.LngLat) => {
+  let { x, y } = map.project(lgnLat);
+  if (ref.current) {
+    x = x + ref.current.offsetLeft + 50;
+    y = y + ref.current.offsetTop - 175;
+  }
+  return { x, y };
+};
 
 function Map({ center, zoom, popupContent }: Props): JSX.Element {
   const ref = React.useRef<HTMLDivElement>(null);
+
+  const [currentCenter, setCurrentCenter] = React.useState<MapboxGL.LngLat | null>(center || null);
 
   const [mapInstance, setMapInstance] = React.useState<MapboxGL.Map | null>(null);
 
   const [markerInstance] = React.useState<MapboxGL.Marker>(new MapboxGL.Marker());
 
-  const reducer: React.Reducer<PopupState, PopupActions> = (state: PopupState, action: PopupActions) => {
-    switch (action.tag) {
-      case "Open":
-        return { ...state, isOpen: true };
-      case "Close":
-        return { ...state, isOpen: false };
-      case "SetContent":
-        return { ...state, content: action.content, isOpen: action.content ? true : false };
-      case "SetPoint":
-        return { ...state, point: action.point };
-      default:
-        throw new Error();
-    }
-  };
+  const [popupState, setPopupState] = React.useState<PopupState>({ isOpen: true, content: null, point: null });
 
-  const [state, dispatch] = React.useReducer(reducer, { isOpen: false, content: null, point: { x: 0, y: 0 } });
-
-  const close = React.useCallback(() => dispatch({ tag: "Close" }), []);
+  const close = React.useCallback(() => setPopupState(state => ({ ...state, isOpen: false })), []);
 
   React.useEffect(() => {
     if (!ref.current) {
@@ -53,61 +43,70 @@ function Map({ center, zoom, popupContent }: Props): JSX.Element {
     const map = new MapboxGL.Map({
       container: ref.current,
       style: "mapbox://styles/mapbox/streets-v11",
-      center,
-      zoom,
+      center: center ? center : new MapboxGL.LngLat(139, 35),
+      zoom: center ? zoom : 5.0,
     });
 
     setMapInstance(map);
+    markerInstance.getElement().addEventListener("click", () => {
+      setPopupState(state => ({ ...state, isOpen: true }));
+    });
 
     if (center) {
       markerInstance.setLngLat(center).addTo(map);
-      markerInstance.getElement().addEventListener("click", () => {
-        dispatch({ tag: "Open" });
-      });
+
+      const point = calculatePoint(ref, map, center);
+      setPopupState(state => ({ ...state, point: point, content: popupContent(() => close()) }));
     }
 
     return () => map.remove();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
+    setCurrentCenter(center || null);
+
     if (!ref.current || !mapInstance || !center) {
       return;
     }
 
     mapInstance.on("move", () => {
-      let { x, y } = mapInstance.project(center);
-      if (ref.current) {
-        x = x + ref.current.offsetLeft + 50;
-        y = y + ref.current.offsetTop - 175;
-      }
-      dispatch({ tag: "SetPoint", point: { x, y } });
+      const point = calculatePoint(ref, mapInstance, center);
+      setPopupState(state => ({ ...state, point: point }));
     });
   }, [mapInstance, center]);
 
   React.useEffect(() => {
-    if (!mapInstance || !center) {
+    if (!mapInstance) {
       return;
     }
 
-    dispatch({ tag: "SetContent", content: null });
+    if (!center) {
+      setPopupState(state => ({ ...state, isOpen: false, content: null }));
+      markerInstance.remove();
+    } else if (!currentCenter || (currentCenter.lng != center.lng && currentCenter.lat != center.lat)) {
+      setPopupState(state => ({ ...state, isOpen: false }));
 
-    mapInstance.flyTo({ center, zoom });
+      mapInstance.flyTo({ center, zoom });
 
-    markerInstance.setLngLat(center);
+      markerInstance.setLngLat(center).addTo(mapInstance);
 
-    mapInstance.once("moveend", () => {
-      if (mapInstance.getCenter().distanceTo(center) < 100.0) {
-        dispatch({ tag: "SetContent", content: popupContent(() => close()) });
-      }
-    });
-  }, [mapInstance, markerInstance, center, zoom, popupContent, close]);
+      mapInstance.once("moveend", () => {
+        if (mapInstance.getCenter().distanceTo(center) < 100.0) {
+          setPopupState(state => ({ ...state, isOpen: true, content: popupContent(() => close()) }));
+        }
+      });
+    }
+  }, [mapInstance, markerInstance, currentCenter, center, zoom, popupContent, close]);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
       <div ref={ref} className="w-full h-full" />
-      {state.isOpen && state.content ? (
-        <div className="absolute" style={{ width: "300px", height: "350px", top: state.point.y, left: state.point.x }}>
-          {state.content}
+      {popupState.isOpen && popupState.content && popupState.point ? (
+        <div
+          className="absolute"
+          style={{ width: "300px", height: "350px", top: popupState.point.y, left: popupState.point.x }}
+        >
+          {popupState.content}
         </div>
       ) : (
         <></>
