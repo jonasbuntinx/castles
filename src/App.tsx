@@ -97,7 +97,14 @@ function App(): JSX.Element {
                   </button>
                   <button onClick={() => filter(({ condition }) => condition != Condition.Original)}>Filter</button>
                   <button onClick={() => filter(null)}>UnFilter</button>
-                  <button onClick={reset}>Reset</button>
+                  <button
+                    onClick={() => {
+                      reset();
+                      setState(state => ({ ...state, sortingRule: null }));
+                    }}
+                  >
+                    Reset
+                  </button>
                   <button onClick={() => setState(state => ({ ...state, selected: next(state.selected) }))}>
                     Next
                   </button>
