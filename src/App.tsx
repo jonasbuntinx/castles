@@ -29,10 +29,16 @@ function App(): JSX.Element {
         return { ...state, selected: action.selected };
       case "Sort":
         return state;
-      case "Next":
-        return state;
-      case "Previous":
-        return state;
+      case "Next": {
+        const currentIndex = data.findIndex(item => (state.selected ? item.id == state.selected.id : false));
+        const nextIndex = (currentIndex + 1) % data.length;
+        return { ...state, selected: data[nextIndex] };
+      }
+      case "Previous": {
+        const currentIndex = data.findIndex(item => (state.selected ? item.id == state.selected.id : false));
+        const nextIndex = (currentIndex + data.length - 1) % data.length;
+        return { ...state, selected: data[nextIndex] };
+      }
       case "Reset":
         return { ...initialState };
       default:
@@ -50,6 +56,7 @@ function App(): JSX.Element {
             {data.map((castle, key) => (
               <button
                 key={key}
+                className={state.selected && castle.id == state.selected.id ? "bg-green-900 text-white" : ""}
                 onClick={() => {
                   dispatch({ tag: "SelectCastle", selected: castle });
                 }}
@@ -72,7 +79,12 @@ function App(): JSX.Element {
             zoom={state.zoom}
             popupContent={close =>
               state.selected ? (
-                <Popup castle={state.selected} onClose={() => close()} onPrevious={() => null} onNext={() => null} />
+                <Popup
+                  castle={state.selected}
+                  onClose={() => close()}
+                  onPrevious={() => dispatch({ tag: "Previous" })}
+                  onNext={() => dispatch({ tag: "Next" })}
+                />
               ) : (
                 <></>
               )

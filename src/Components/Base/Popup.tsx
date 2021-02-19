@@ -1,6 +1,6 @@
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import * as React from "react";
-import { Color, IconButton } from "~/Components/Base/Button";
+import { Shape, Button } from "~/Components/Base/Button";
 
 type Props = {
   onClose: () => void;
@@ -19,7 +19,7 @@ function Popup(props: Props): JSX.Element {
               <div className="ml-3 text-white">{props.header}</div>
             </div>
             <div className="flex-shrink-0">
-              <IconButton color={Color.Green} onClick={props.onClose} icon={faTimes} />
+              <Button shape={Shape.Icon} onClick={props.onClose} icon={faTimes} />
             </div>
           </div>
         </div>

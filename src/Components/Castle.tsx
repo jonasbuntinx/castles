@@ -1,16 +1,9 @@
-import {
-  faCheck,
-  faChessRook,
-  faChevronLeft,
-  faChevronRight,
-  faHammer,
-  faHouseDamage,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faChessRook, faHammer, faHouseDamage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs = require("dayjs");
 import * as React from "react";
 import { Castle, Condition } from "~/Data/Castle";
-import { Color, IconButton } from "~/Components/Base/Button";
+import { Color, Button } from "~/Components/Base/Button";
 import { Popup as BasePopup } from "~/Components/Base/Popup";
 
 type Props = {
@@ -47,9 +40,11 @@ function Popup(props: Props): JSX.Element {
   );
 
   const footer = (
-    <div className="flex flex-row justify-between border-t border-gray-200  py-3 px-6 ">
-      <IconButton color={Color.Gray} icon={faChevronLeft} onClick={props.onPrevious} />
-      <IconButton color={Color.Gray} icon={faChevronRight} onClick={props.onNext} />
+    <div className="flex flex-row justify-between border-t border-gray-200  p-3">
+      <Button color={Color.Secondary} onClick={props.onPrevious}>
+        Previous
+      </Button>
+      <Button onClick={props.onNext}>Next</Button>
     </div>
   );
 
