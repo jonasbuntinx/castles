@@ -81,6 +81,7 @@ function App(): JSX.Element {
               state.selected ? (
                 <Popup
                   castle={state.selected}
+                  className="h-full"
                   onClose={() => close()}
                   onPrevious={() => dispatch({ tag: "Previous" })}
                   onNext={() => dispatch({ tag: "Next" })}

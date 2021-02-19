@@ -3,6 +3,7 @@ import * as React from "react";
 import { Shape, Button } from "~/Components/Base/Button";
 
 type Props = {
+  className?: string;
   onClose: () => void;
   header: React.ReactNode;
   footer?: React.ReactNode;
@@ -11,7 +12,7 @@ type Props = {
 
 function Popup(props: Props): JSX.Element {
   return (
-    <div className="shadow flex flex-col">
+    <div className={["shadow flex flex-col", props.className].join(" ")}>
       <div className="bg-green-900">
         <div className="py-3 px-3">
           <div className="flex items-center justify-between">

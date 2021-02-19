@@ -8,6 +8,7 @@ import { Popup as BasePopup } from "~/Components/Base/Popup";
 
 type Props = {
   castle: Castle;
+  className?: string;
   onPrevious: () => void;
   onNext: () => void;
   onClose: () => void;
@@ -49,7 +50,7 @@ function Popup(props: Props): JSX.Element {
   );
 
   return (
-    <BasePopup onClose={() => props.onClose()} header={header} footer={footer}>
+    <BasePopup className={props.className} onClose={() => props.onClose()} header={header} footer={footer}>
       <div className="flex-1 flex flex-col overflow-hidden h-full">
         <div className="flex-1 flex overflow-hidden h-full ">
           <div className="px-4 pt-3 pb-2">
