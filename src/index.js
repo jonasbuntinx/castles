@@ -1,7 +1,7 @@
 import mapboxgl from "mapbox-gl";
 import { main } from "./Main";
-import { MAPBOX_ACCESS_TOKEN } from "./Env";
 
-mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+mapboxgl.accessToken =
+  "pk.eyJ1IjoiYnVudGlueGpvbmFzIiwiYSI6ImNrbDkwNjd0dTIxbzgybnA3cnNueDQxYzQifQ.LL_DXVdqg-gr4IPb7zxiXQ";
 
 main();
