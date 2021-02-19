@@ -3,7 +3,7 @@ import { Map } from "~/Components/Map";
 import { Popup } from "~/Components/Castle";
 import { Castle, castles, Condition } from "~/Data/Castle";
 import dayjs = require("dayjs");
-import { List } from "~Components/List";
+import { List } from "~/Components/List";
 
 type State = {
   selected: Castle | null;
@@ -43,6 +43,7 @@ function App(): JSX.Element {
               <div className="w-80">
                 <div className="flex flex-col">
                   {list}
+                  <br />
                   <button
                     className={
                       state.sortingRule?.type == SortType.Alphanumeric && Boolean(state.sortingRule?.desc) == true
