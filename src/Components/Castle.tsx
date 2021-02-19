@@ -6,17 +6,10 @@ import { Castle, Condition } from "~/Data/Castle";
 import { Color, Button } from "~/Components/Base/Button";
 import { Popup as BasePopup } from "~/Components/Base/Popup";
 
-type Props = {
-  castle: Castle;
-  className?: string;
-  onPrevious: () => void;
-  onNext: () => void;
-  onClose: () => void;
-};
-
-function Popup(props: Props): JSX.Element {
-  const { bg, text, icon } = React.useMemo(() => {
-    switch (props.castle.condition) {
+// ConditionIcon
+const ConditionIcon = ({ condition }: { condition: Condition }): JSX.Element => {
+  const { bg, text, icon } = (() => {
+    switch (condition) {
       case Condition.Ruins:
         return { bg: "bg-red-100", text: "text-red-600", icon: faHouseDamage };
       case Condition.Reconstructed:
@@ -24,8 +17,24 @@ function Popup(props: Props): JSX.Element {
       case Condition.Original:
         return { bg: "bg-green-100", text: "text-green-600", icon: faChessRook };
     }
-  }, [props.castle.condition]);
+  })();
+  return (
+    <div className={"flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full " + bg}>
+      <FontAwesomeIcon className={"text-xs " + text} icon={icon} />
+    </div>
+  );
+};
 
+// Popup
+type PopupProps = {
+  castle: Castle;
+  className?: string;
+  onPrevious: () => void;
+  onNext: () => void;
+  onClose: () => void;
+};
+
+function Popup(props: PopupProps): JSX.Element {
   const header = (
     <>
       <h1 className="font-medium truncate">{props.castle.name}</h1>
@@ -47,9 +56,7 @@ function Popup(props: Props): JSX.Element {
       <div className="flex-1 flex flex-col overflow-hidden h-full">
         <div className="flex-1 flex overflow-hidden h-full ">
           <div className="px-4 pt-3 pb-2">
-            <div className={"flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full " + bg}>
-              <FontAwesomeIcon className={"text-xs " + text} icon={icon} />
-            </div>
+            <ConditionIcon condition={props.castle.condition} />
           </div>
           <div className="flex-1 pr-4 pt-3 pb-2 overflow-auto">
             <div className="text-left text-sm text-gray-900">{props.castle.description}</div>
@@ -60,4 +67,31 @@ function Popup(props: Props): JSX.Element {
   );
 }
 
-export { Popup };
+// Summary
+type SummaryProps = {
+  castle: Castle;
+  className?: string;
+  isActive: boolean;
+  onClick: () => void;
+};
+
+function Summary(props: SummaryProps): JSX.Element {
+  return (
+    <li
+      className={
+        props.className +
+        " cursor-pointer py-5 px-4 text-gray-900 bg-white hover:text-green-900 border-r-4 border-white " +
+        (props.isActive ? "border-green-900 text-green-900" : "hover:border-green-500 hover:text-green-900")
+      }
+      onClick={props.onClick}
+    >
+      <h1 className="flex gap-2 font-medium truncate">
+        {props.castle.name}
+        <ConditionIcon condition={props.castle.condition} />
+      </h1>
+      <h3 className="text-xs mt-2">{"Visited: " + dayjs(props.castle.visited).format("DD/MM/YYYY")}</h3>
+    </li>
+  );
+}
+
+export { Popup, Summary };
