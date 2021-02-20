@@ -10,7 +10,7 @@ type Props = {
   children?: React.ReactNode;
 };
 
-function Popup(props: Props): JSX.Element {
+function ControlledModal(props: Props): JSX.Element {
   return (
     <div className={["shadow flex flex-col", props.className].join(" ")}>
       <div className="bg-green-900">
@@ -31,4 +31,4 @@ function Popup(props: Props): JSX.Element {
   );
 }
 
-export { Popup };
+export { ControlledModal };

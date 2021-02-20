@@ -17,7 +17,19 @@ enum Condition {
   Original = "ORIGINAL",
 }
 
-// Data
+// Helpers
+const printCondition = (condition: Condition): string => {
+  switch (condition) {
+    case Condition.Ruins:
+      return "Ruins";
+    case Condition.Reconstructed:
+      return "Reconstructed";
+    case Condition.Original:
+      return "Original";
+  }
+};
+
+// Static Data
 const castles = [
   {
     id: 0,
@@ -35,7 +47,7 @@ const castles = [
     visited: dayjs("2016-08-24").toDate(),
     condition: Condition.Original,
     description:
-      "Matsumoto Castle (松本城, Matsumoto-jō), originally known as Fukashi Castle, is one of Japan's premier historic castles, along with Himeji and Kumamoto. The building is also known as the Crow Castle (烏城, Karasu-jō) due to its black exterior.",
+      'Matsumoto Castle (松本城, Matsumoto-jō), originally known as Fukashi Castle, is one of Japan\'s premier historic castles, along with Himeji and Kumamoto. The building is also known as the "Crow Castle" (烏城, Karasu-jō) due to its black exterior.',
   },
   {
     id: 2,
@@ -55,6 +67,33 @@ const castles = [
     description:
       "Nijō Castle (二条城, Nijō-jō) is a flatland castle in Kyoto, Japan. The castle consists of two concentric rings (Kuruwa) of fortifications, the Ninomaru Palace, the ruins of the Honmaru Palace, various support buildings and several gardens. The surface area of the castle is 275,000 square metres (27.5 ha; 68 acres), of which 8,000 square metres (86,000 sq ft) is occupied by buildings.",
   },
+  {
+    id: 4,
+    name: "Himeji Castle",
+    location: new MapboxGL.LngLat(134.6917107, 34.8394534),
+    visited: dayjs("2013-04-20").toDate(),
+    condition: Condition.Original,
+    description:
+      'Himeji Castle (姫路城, Himeji-jō) is a hilltop Japanese castle complex situated in the city of Himeji which is located in the Hyōgo Prefecture of Japan. The castle is regarded as the finest surviving example of prototypical Japanese castle architecture, comprising a network of 83 rooms with advanced defensive systems from the feudal period. The castle is frequently known as Hakuro-jō or Shirasagi-jō ("White Egret Castle" or "White Heron Castle") because of its brilliant white exterior and supposed resemblance to a bird taking flight.',
+  },
+  {
+    id: 5,
+    name: "Oshi Castle",
+    location: new MapboxGL.LngLat(139.4526793, 36.1375827),
+    visited: dayjs("2020-09-17").toDate(),
+    condition: Condition.Reconstructed,
+    description:
+      'Oshi Castle (忍城, Oshi-jō) is a Japanese castle located in Gyōda, Saitama Prefecture, Japan. During the Edo period, Oshi Castle was the center of the 100,000 koku Oshi Domain, but the castle is far better known for its association with the Siege of Oshi during the late Sengoku period. The castle was also known as "Kama-jō" (亀城, Turtle Castle) or "Oshi-no-uki-jō" (忍の浮き城, the Floating Castle of Oshi). It was regarded as one of the seven main strongholds of the Kantō region.',
+  },
+  {
+    id: 5,
+    name: "Kawagoe Castle",
+    location: new MapboxGL.LngLat(139.4904141, 35.9250114),
+    visited: dayjs("2020-09-23").toDate(),
+    condition: Condition.Ruins,
+    description:
+      "Kawagoe Castle (川越城, Kawagoe-jō) is a flatland Japanese castle in the city of Kawagoe, in Japan's Saitama Prefecture. It is the closest castle to Tokyo to be accessible to visitors, as Edo castle is now the Imperial palace, and largely inaccessible.",
+  },
 ];
 
-export { Castle, Condition, castles };
+export { Castle, Condition, printCondition, castles };

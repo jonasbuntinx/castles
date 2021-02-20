@@ -4,10 +4,12 @@ import dayjs = require("dayjs");
 import * as React from "react";
 import { Castle, Condition } from "~/Data/Castle";
 import { Color, Button } from "~/Components/Base/Button";
-import { Popup as BasePopup } from "~/Components/Base/Popup";
+import * as Base from "~Components/Base/ControlledModal";
 
 // ConditionIcon
-const ConditionIcon = ({ condition }: { condition: Condition }): JSX.Element => {
+type ConditionIconProps = { condition: Condition };
+
+const ConditionIcon = ({ condition }: ConditionIconProps): JSX.Element => {
   const { bg, text, icon } = (() => {
     switch (condition) {
       case Condition.Ruins:
@@ -26,7 +28,7 @@ const ConditionIcon = ({ condition }: { condition: Condition }): JSX.Element => 
 };
 
 // Popup
-type PopupProps = {
+type ControlledModalProps = {
   castle: Castle;
   className?: string;
   onPrevious: () => void;
@@ -34,7 +36,7 @@ type PopupProps = {
   onClose: () => void;
 };
 
-function Popup(props: PopupProps): JSX.Element {
+function ControlledModal(props: ControlledModalProps): JSX.Element {
   const header = (
     <>
       <h1 className="font-medium truncate">{props.castle.name}</h1>
@@ -52,7 +54,7 @@ function Popup(props: PopupProps): JSX.Element {
   );
 
   return (
-    <BasePopup className={props.className} onClose={() => props.onClose()} header={header} footer={footer}>
+    <Base.ControlledModal className={props.className} onClose={() => props.onClose()} header={header} footer={footer}>
       <div className="flex-1 flex flex-col overflow-hidden h-full">
         <div className="flex-1 flex overflow-hidden h-full ">
           <div className="px-4 pt-3 pb-2">
@@ -63,7 +65,7 @@ function Popup(props: PopupProps): JSX.Element {
           </div>
         </div>
       </div>
-    </BasePopup>
+    </Base.ControlledModal>
   );
 }
 
@@ -94,4 +96,4 @@ function Summary(props: SummaryProps): JSX.Element {
   );
 }
 
-export { Popup, Summary };
+export { ControlledModal, Summary };

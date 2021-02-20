@@ -1,7 +1,7 @@
 import * as React from "react";
 import { usePopper } from "react-popper";
 
-type SelectProps<D> = {
+type Props<D> = {
   options: D[];
   isSelected: (value: D) => boolean;
   toLabel: (value: D) => React.ReactNode;
@@ -9,7 +9,7 @@ type SelectProps<D> = {
   children: React.ReactNode;
 };
 
-const Filter = <D extends Record<string, unknown>>(props: SelectProps<D>): JSX.Element => {
+const Dropdown = <D,>(props: Props<D>): JSX.Element => {
   const [visible, setVisibility] = React.useState(false);
   const referenceRef = React.useRef<HTMLDivElement>(null);
   const popperRef = React.useRef<HTMLDivElement>(null);
@@ -69,4 +69,4 @@ const Filter = <D extends Record<string, unknown>>(props: SelectProps<D>): JSX.E
   );
 };
 
-export { Filter };
+export { Dropdown };
