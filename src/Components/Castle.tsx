@@ -4,7 +4,7 @@ import dayjs = require("dayjs");
 import * as React from "react";
 import { Castle, Condition } from "~/Data/Castle";
 import { Color, Button } from "~/Components/Base/Button";
-import * as Base from "~Components/Base/ControlledModal";
+import * as Base from "~/Components/Base/ControlledModal";
 
 // ConditionIcon
 type ConditionIconProps = { condition: Condition };

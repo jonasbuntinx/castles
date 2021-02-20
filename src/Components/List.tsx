@@ -1,8 +1,8 @@
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import * as React from "react";
-import { Control, Color } from "./Base/Control";
-import { Dropdown } from "./Base/Dropdown";
+import { Control, Color } from "~/Components/Base/Control";
+import { Dropdown } from "~/Components/Base/Dropdown";
 
 type Props<D extends { id: number }> = {
   data: D[];
