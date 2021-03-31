@@ -86,7 +86,7 @@ const castles = [
       'Oshi Castle (忍城, Oshi-jō) is a Japanese castle located in Gyōda, Saitama Prefecture, Japan. During the Edo period, Oshi Castle was the center of the 100,000 koku Oshi Domain, but the castle is far better known for its association with the Siege of Oshi during the late Sengoku period. The castle was also known as "Kama-jō" (亀城, Turtle Castle) or "Oshi-no-uki-jō" (忍の浮き城, the Floating Castle of Oshi). It was regarded as one of the seven main strongholds of the Kantō region.',
   },
   {
-    id: 5,
+    id: 6,
     name: "Kawagoe Castle",
     location: new MapboxGL.LngLat(139.4904141, 35.9250114),
     visited: dayjs("2020-09-23").toDate(),
